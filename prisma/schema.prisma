@@ -53,9 +53,8 @@ model UserReward {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   userId      String   @db.ObjectId
   user        User     @relation(fields: [userId], references: [id])
-  rewardType  String
-  description String
-  expPoints   Int
+  rewardId    String   @db.ObjectId
+  reward      Reward   @relation(fields: [rewardId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -65,6 +64,7 @@ model Reward {
   rewardType  String
   description String
   expPoints   Int
+  userReward  UserReward[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

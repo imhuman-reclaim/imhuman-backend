@@ -26,20 +26,7 @@ export const register = async (req: any, res: Response) => {
   };
 
 
-const getAllUsers = async (req: any, res: Response) => {
-    try {
-        // isAdmin middleware should be used before this
-        const users = await prisma.user.findMany({})
-        res.status(200).json({
-            message: "Users fetched successfully",
-            users: users
-        })
-    } catch (e) {
-        res.status(500).json({
-            message: "Something went wrong, couldn't fetch the users",
-        })
-    }
-}
+
 
 const checkWalletAddress = async (req: any, res: Response) => {
     const { walletAddress } = req.params;
@@ -78,4 +65,4 @@ const getUserByWalletAddress = async (req: any, res: Response) => {
 };
 
 
-export { getAllUsers, checkWalletAddress, getUserByWalletAddress }
+export { checkWalletAddress, getUserByWalletAddress }

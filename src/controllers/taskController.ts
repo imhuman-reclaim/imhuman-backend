@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 const APP_ID = process.env.APP_ID || '';
 const APP_SECRET = process.env.APP_SECRET || '';
-const callbackURL = 'https://api.reclaimapi.com/verifyProof';
+const callbackURL = 'https://m8aanm1noe.execute-api.ap-southeast-1.amazonaws.com/task/verify';
 // tasks
 
 export const getAllTasks = async (req: Request, res: Response) => {

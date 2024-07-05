@@ -13,11 +13,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model nonce {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  nonce         String
+  walletAddress String
+  isUsed        Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
 model User {
   id            String       @id @default(auto()) @map("_id") @db.ObjectId
   walletAddress String       @unique
   referredBy    String?
-  referralCode  String       @unique
+  referralCode  String?      
   xp            Int          @default(0)
   referrals     String[]
   tasks         UserTask[]
@@ -31,7 +40,8 @@ model UserTask {
   taskId      String    @db.ObjectId
   task        Task      @relation(fields: [taskId], references: [id])
   completedAt DateTime?
-  proof       Json
+  proof       Json?
+  sessionId   String
   userId      String    @db.ObjectId
   user        User      @relation(fields: [userId], references: [id])
   createdAt   DateTime  @default(now())
@@ -50,21 +60,21 @@ model Task {
 }
 
 model UserReward {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String   @db.ObjectId
-  user        User     @relation(fields: [userId], references: [id])
-  rewardId    String   @db.ObjectId
-  reward      Reward   @relation(fields: [rewardId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  rewardId  String   @db.ObjectId
+  reward    Reward   @relation(fields: [rewardId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Reward {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
   rewardType  String
   description String
   expPoints   Int
   userReward  UserReward[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }

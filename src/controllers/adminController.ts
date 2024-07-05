@@ -26,21 +26,6 @@ export const addTask = async (req: Request, res: Response) => {
 };
 
 
-export const getAllUsers = async (req: any, res: Response) => {
-    try {
-        // isAdmin middleware should be used before this
-        const users = await prisma.user.findMany({})
-        res.status(200).json({
-            message: "Users fetched successfully",
-            users: users
-        })
-    } catch (e) {
-        res.status(500).json({
-            message: "Something went wrong, couldn't fetch the users",
-        })
-    }
-}
-
 // add reward
 export const addReward = async (req: Request, res: Response) => {
     const { description, expPoints, rewardType } = req.body;

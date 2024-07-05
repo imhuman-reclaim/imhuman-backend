@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { authenticate } from '../controllers/authController';
+import { authenticateUser, generateNonce } from '../controllers/authController';
 
 const router = Router();
 
-router.post('/auth', authenticate);
+router.post('/generate-nonce', generateNonce);
+router.post('/verify', authenticateUser);
 
 export default router;

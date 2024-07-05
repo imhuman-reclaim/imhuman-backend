@@ -8,9 +8,9 @@ import adminRoutes from './adminRoutes';
 const router = Router();
 
 router.use('/user',userRoutes);
-router.use(authRoutes);
-router.use(taskRoutes);
-router.use(rewardRoutes);
+router.use('/auth',authRoutes);
+router.use('/task',taskRoutes);
+router.use('/reward',rewardRoutes);
 router.use('/admin', adminRoutes)
 
 export default router;

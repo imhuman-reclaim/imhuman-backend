@@ -10,6 +10,7 @@ export const getUserAndPoints = async (req: Request, res: Response) => {
         const users = await prisma.user.findMany({ select: {
             id: true,
             walletAddress: true,
+            xp: true,
         }, orderBy: { xp: 'desc' } });
         return res.status(200).json(users);
     }

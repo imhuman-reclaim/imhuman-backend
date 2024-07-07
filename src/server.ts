@@ -8,8 +8,8 @@ const app = express();
 
 
 
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
+app.get('/health', (_, res) => {
+  return res.json({ status: 'ok' });
 });
 
 app.use('/api', router);

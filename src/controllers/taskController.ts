@@ -35,6 +35,10 @@ export const updateTask = async (req: any, res: Response) => {
         if(!user){
             return res.status(404).json({ error: 'User not found' });
         }
+        const isCompleted = await prisma.userTask.findFirst({ where: { userId: user.id, taskId } });
+        if(isCompleted){
+            return res.status(400).json({ error: 'Task already completed' });
+        }
         const userTask = await prisma.userTask.create({
             data: {
             sessionId: new Date().getTime().toString(),
@@ -43,10 +47,15 @@ export const updateTask = async (req: any, res: Response) => {
                 userId: user.id,
             }
         });
+        if(!userTask){
+            return res.status(500).json({ error: 'Failed to update task' });
+        }
 
         await prisma.user.update({
             where: { walletAddress: address },
-            data: { xp: user.xp + task.expPoints }
+            data: { xp: user.xp + task.expPoints, tasks: {
+                connect: { id: userTask?.id }
+            } }
         });
         res.status(200).json(userTask);
     }
@@ -106,6 +115,9 @@ export const VerifyProof = async (req: Request, res: Response) => {
             }
             console.log(`Proof verified for sessionId: ${sessionId}`)
             const proofData = await prisma.userTask.findFirst({ where: { sessionId: sessionId } })
+            if(proofData?.completedAt){
+                return res.status(400).send({ message: 'Proof already verified' })
+            }
             const task = await prisma.task.findFirst({ where: { id: proofData?.taskId } })
             if (!proofData) {
               return res.status(404).send({ message: 'No session found' })
@@ -121,6 +133,9 @@ export const VerifyProof = async (req: Request, res: Response) => {
                 where: { walletAddress: proofData.userId },
                 data: { xp: {
                     increment: task?.expPoints
+                }, 
+                tasks: {
+                    connect: { id: proofData?.id }
                 }}
             })
             return res.status(200).send({ message: 'Proof verification successful' })

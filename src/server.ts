@@ -8,8 +8,8 @@ const app = express();
 
 
 
-app.get('/', (req, res) => {
-  res.send('Welcome to reclaim rewards');
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
 });
 
 app.use('/api', router);

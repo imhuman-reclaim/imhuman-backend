@@ -7,6 +7,7 @@ const prisma = new PrismaClient();
 // add tasks 
 export const addTask = async (req: Request, res: Response) => {
     const { description, expPoints, type, providerId } = req.body;
+    if(!description || !expPoints || !type || !providerId) return res.status(400).json({ error: 'All fields are required' });
 
     try {
         const task = await prisma.task.create({
@@ -29,7 +30,7 @@ export const addTask = async (req: Request, res: Response) => {
 // add reward
 export const addReward = async (req: Request, res: Response) => {
     const { description, expPoints, rewardType } = req.body;
-
+    if(!description || !expPoints || !rewardType) return res.status(400).json({ error: 'All fields are required' });
     try {
         const reward = await prisma.reward.create({
             data: {

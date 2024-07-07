@@ -2,10 +2,14 @@
   "name": "reclaim-rewards-be",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/server.js",
   "scripts": {
-    "dev": "nodemon src/server.ts",
+    "start": "sh -c 'while true; do node dist/server.js; done'",
     "build": "tsc",
+    "watch-tsc": "tsc -w",
+    "deploy": "node dist/server.js",
+    "watch-deploy": "nodemon dist/server.js",
+    "dev": "concurrently \"npm run watch-tsc\" \"npm run watch-deploy\"",
     "migrate": "npx prisma generate"
   },
   "keywords": [],
@@ -26,6 +30,7 @@
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.14.5",
+    "concurrently": "^8.2.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   }

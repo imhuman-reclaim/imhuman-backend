@@ -8,7 +8,19 @@ const prisma = new PrismaClient();
 export const getUser = async (req: any, res: Response) => {
     const address = req.user;
     try{
-        const user = await prisma.user.findFirst({ where: { walletAddress: address } });
+        const user = await prisma.user.findFirst({ where: { walletAddress: address }, 
+        include: {
+            tasks: {
+                include: {
+                    task: true
+                },
+            },
+            RewardsClaim: {
+                include: {
+                    reward: true
+                },
+        },
+        } });
         if(!user){
             return res.status(404).json({ error: 'User not found' });
         }

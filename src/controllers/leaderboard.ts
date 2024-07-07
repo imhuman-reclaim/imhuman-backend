@@ -1,11 +1,11 @@
 
 import { PrismaClient } from "@prisma/client"
-import { Response } from 'express';
+import { Response, Request } from 'express';
 
 const prisma = new PrismaClient();
 
 
-export const getUserAndPoints = async (req: Response, res: Response) => {
+export const getUserAndPoints = async (req: Request, res: Response) => {
     try{
         const users = await prisma.user.findMany({ select: {
             id: true,

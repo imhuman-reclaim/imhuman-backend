@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 // // rewards
 
-export const getAllRewards = async (req: Request, res: Response) => {
+export const getAllRewards = async (_: Request, res: Response) => {
     try {
         const rewards = await prisma.reward.findMany();
         res.status(200).json(rewards);
@@ -42,6 +42,15 @@ export const claimReward = async (req: any, res: Response) => {
                 rewardId,
                 userId: findUser.id,
             }
+        });
+        if(!userReward){
+            return res.status(500).json({ error: 'Failed to claim reward' });
+        }
+        await prisma.user.update({
+            where: { walletAddress: user },
+            data: { RewardsClaim: {
+                connect: { id: userReward.id }
+            } }
         });
         res.status(200).json(userReward);
     }

@@ -68,13 +68,14 @@ export const updateTask = async (req: any, res: Response) => {
 }
 
 
-export const GenerateProof = async (req: Request, res: Response) => {
+export const GenerateProof = async (req: any, res: Response) => {
     try {
-        const { walletAddress, typeId } = req.query as { walletAddress: string, typeId: string }
-        if(!walletAddress || !typeId){
-            return res.status(400).json({ error: 'Wallet address and type are required' })
+        const walletAddress = req.user;
+        const { taskId } = req.query as { taskId: string }
+        if(!taskId){
+            return res.status(400).json({ error: 'taskId are required' })
         }
-        const validateTask = await prisma.task.findFirst({ where: { id: typeId } });
+        const validateTask = await prisma.task.findFirst({ where: { id: taskId } });
         if(!validateTask){
             return res.status(404).json({ error: 'Task not found' });
         }
@@ -95,7 +96,7 @@ export const GenerateProof = async (req: Request, res: Response) => {
         const update = await prisma.userTask.create({
             data: {
                 sessionId,
-                taskId: typeId,
+                taskId: taskId,
                 userId: walletAddress
             }
         })

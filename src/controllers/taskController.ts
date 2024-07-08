@@ -71,7 +71,7 @@ export const updateTask = async (req: any, res: Response) => {
 export const GenerateProof = async (req: any, res: Response) => {
     try {
         const walletAddress = req.user;
-        const { taskId } = req.query as { taskId: string }
+        const { taskId } = req.body as { taskId: string }
         if(!taskId){
             return res.status(400).json({ error: 'taskId are required' })
         }
@@ -79,10 +79,7 @@ export const GenerateProof = async (req: any, res: Response) => {
         if(!validateTask){
             return res.status(404).json({ error: 'Task not found' });
         }
-
-
         const reclaimClient = new Reclaim.ProofRequest(APP_ID);
-
         await reclaimClient.setAppCallbackUrl(`${callbackURL}`)
         await reclaimClient.buildProofRequest(validateTask?.providerId!)
         await reclaimClient.addContext('walletAddress', walletAddress)
@@ -92,12 +89,13 @@ export const GenerateProof = async (req: any, res: Response) => {
             )
         )
         const { requestUrl, statusUrl } = await reclaimClient.createVerificationRequest()
+        const userId = await prisma.user.findFirst({ where: { walletAddress } })
         const sessionId = await reclaimClient.sessionId;
         const update = await prisma.userTask.create({
             data: {
                 sessionId,
                 taskId: taskId,
-                userId: walletAddress
+                userId: userId?.id!
             }
         })
         console.log(`Proof request created for sessionId: ${update}`)

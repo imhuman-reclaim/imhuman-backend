@@ -51,6 +51,12 @@ export const updateReferralCode = async (req: any, res: Response) => {
             where: { walletAddress: address },
             data: { referralCode, referredBy: validateReferralCode.walletAddress }
         });
+         await prisma.user.update({
+            where: { walletAddress: validateReferralCode.walletAddress },
+            data: { xp: {
+                increment: 25
+            } }
+        });
         res.status(200).json(user);
     }
     catch(error){

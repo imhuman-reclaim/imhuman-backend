@@ -15,12 +15,13 @@ export const generateNonce = async (req: Request, res: Response) => {
     }
     const nonce = await uuidV4(randomBytes(16));
     const loadNonce = await prisma.nonce.findFirst({ where: { walletAddress, isUsed: false } });
+    let id 
     if(loadNonce){
-      await prisma.nonce.update({ where: { id: loadNonce.id }, data: { nonce } });
+      id = await prisma.nonce.update({ where: { id: loadNonce.id }, data: { nonce } });
     } else {
-      await prisma.nonce.create({ data: { walletAddress, nonce}})
+     id = await prisma.nonce.create({ data: { walletAddress, nonce}})
     }
-    res.status(200).json({ nonce });
+    res.status(200).json({ id: id?.id, nonce });
   } catch (error) {
     console.log(error);
     res.status(500).json(error);

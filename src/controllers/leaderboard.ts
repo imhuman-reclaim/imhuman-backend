@@ -28,14 +28,14 @@ export const getRefferalCounts = async(req: any, res: Response) => {
             return res.status(404).json({ error: 'User not found' });
         }
         // find the users joined with the referral code of the current user 
-        const users = await prisma.user.findMany({ where: { referredBy: user.walletAddress, 
+        const users = await prisma.user.findMany({ where: { referredBy: address, 
          }, select: { 
             id: true,
             walletAddress: true,
             referrals: true,
             tasks: true,
         } });
-        const referrals = users.filter(user => user.tasks.length > 0).sort((a, b) => b.referrals.length - a.referrals.length);
+        const referrals = users.sort((a, b) => b.referrals.length - a.referrals.length);
         return res.status(200).json(referrals);
     }
     catch(error){

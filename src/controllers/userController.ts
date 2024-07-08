@@ -43,6 +43,10 @@ export const updateReferralCode = async (req: any, res: Response) => {
         if(!validateReferralCode){
             return res.status(404).json({ error: 'Invalid referral code' });
         }
+        const checkIfUserAlreadyHasReferralCode = await prisma.user.findFirstOrThrow({ where: { walletAddress: address } });
+        if(checkIfUserAlreadyHasReferralCode.referralCode){
+            return res.status(400).json({ error: 'User already has a referral code' });
+        }
         const user = await prisma.user.update({
             where: { walletAddress: address },
             data: { referralCode, referredBy: validateReferralCode.walletAddress }

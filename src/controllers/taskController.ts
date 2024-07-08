@@ -135,9 +135,6 @@ export const VerifyProof = async (req: Request, res: Response) => {
                 where: { walletAddress: proofData.userId },
                 data: { xp: {
                     increment: task?.expPoints
-                }, 
-                tasks: {
-                    connect: { id: proofData?.id }
                 }}
             })
             return res.status(200).send({ message: 'Proof verification successful' })

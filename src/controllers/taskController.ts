@@ -31,6 +31,9 @@ export const updateTask = async (req: any, res: Response) => {
         if(!task){
             return res.status(404).json({ error: 'Task not found' });
         }
+        if(task.providerId !== '0x0'){
+            return res.status(400).json({ error: 'cannot update task' });
+        }
         const user = await prisma.user.findFirst({ where: { walletAddress: address } });
         if(!user){
             return res.status(404).json({ error: 'User not found' });

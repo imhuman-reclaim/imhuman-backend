@@ -132,7 +132,7 @@ export const VerifyProof = async (req: Request, res: Response) => {
                 }
             })
             await prisma.user.update({
-                where: { walletAddress: proofData.userId },
+                where: { id: proofData?.userId },
                 data: { xp: {
                     increment: task?.expPoints
                 }}

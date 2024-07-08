@@ -33,7 +33,6 @@ export const getRefferalCounts = async(req: any, res: Response) => {
             id: true,
             walletAddress: true,
             referrals: true,
-            tasks: true,
         } });
         const referrals = users.sort((a, b) => b.referrals.length - a.referrals.length);
         return res.status(200).json(referrals);

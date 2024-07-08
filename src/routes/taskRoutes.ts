@@ -9,7 +9,7 @@ const router = Router();
 
 router.get('/',isSignedIn, json(), getAllTasks);
 router.post('/generate',json(), isSignedIn, GenerateProof);
-router.post('/verify',text() ,VerifyProof);
+router.post('/verify',text({ type: "*/*" }) ,VerifyProof);
 router.post('/update', json(), isSignedIn, updateTask);
 
 export default router;

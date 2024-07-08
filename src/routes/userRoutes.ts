@@ -9,7 +9,7 @@ const router = Router();
 router.use(json());
 router.get('/',isSignedIn,getUser);
 router.get('/leaderboard', getUserAndPoints);
-router.get('/leaderboard/referral', getRefferalCounts);
+router.get('/leaderboard/referral', isSignedIn, getRefferalCounts);
 router.post('/update/referral', isSignedIn, updateReferralCode);
 
 export default router;

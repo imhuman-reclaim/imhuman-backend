@@ -20,7 +20,7 @@ export const getAllRewards = async (_: Request, res: Response) => {
 
 export const claimReward = async (req: any, res: Response) => {
     const user = req.user
-    const { rewardId } = req.body;
+    const { rewardId, address } = req.body;
     try{
         if(!rewardId){
             return res.status(400).json({ error: 'Reward id is required' });
@@ -40,6 +40,7 @@ export const claimReward = async (req: any, res: Response) => {
         const userReward = await prisma.userReward.create({
             data: {
                 rewardId,
+                address,
                 userId: findUser.id,
             }
         });

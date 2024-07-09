@@ -27,6 +27,30 @@ export const generateNonce = async (req: Request, res: Response) => {
     res.status(500).json(error);
   }
 }
+
+const verifySCWSign = async(sign: string, message: string, walletAddress: string) => {
+  try{
+    const response = await fetch(`https://api.connect.cometh.io/wallets/${walletAddress}/is-valid-signature`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": process.env.COMETH_API_KEY!
+      },
+      body: JSON.stringify({
+        "signature": sign,
+        "message": message
+      }),
+  });
+  const data = await response.json();
+  if(!data.success){
+    return false
+  }  
+  return true
+} catch(error){
+    return false
+  }
+}
+
 // authenticate user 
 export const authenticateUser = async (req: Request, res: Response) => {
     const { id, signature } = req.body;
@@ -41,12 +65,19 @@ export const authenticateUser = async (req: Request, res: Response) => {
       const message = `Welcome to ImHuman\n\nClick to sign in.\n\nThis request does not trigger any transaction or cost any fees.\n\nWallet Address: ${nonce?.walletAddress}\n\nNonce: ${nonce?.nonce}`
       const referralCode = uuidV4(randomBytes(16)).slice(0, 6);
 
+      if(signature.length !== 132){
+        const isValid = await verifySCWSign(signature, message, nonce?.walletAddress);
+        if(!isValid){
+          return res.status(400).json({ error: 'Invalid signature' });
+        }
+      } else {
       //const message = `Welcome to ImHuman\n\nClick to sign in.\n\nThis request does not trigger any transaction or cost any fees.\n\n\n\nWallet Address: 0xE855027BB11E4820D302956143333c80A02142B1\n\nNonce: 23437498-3d0c-4690-a14c-cd9bac6474ef`
       const recoveredAddress = ethers.verifyMessage(message, signature);
       console.log(recoveredAddress);
       if (recoveredAddress?.toLocaleLowerCase() !== nonce?.walletAddress?.toLocaleLowerCase()) {
           return res.status(400).json({ error: 'Invalid signature' });
       }
+    }
       const token = await generateToken({ address: nonce?.walletAddress });
       await prisma.nonce.update({ where: { id }, data: { isUsed: true } });
       const user = await prisma.user.findFirst({ where: { walletAddress: nonce?.walletAddress } });

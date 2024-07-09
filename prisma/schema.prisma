@@ -62,6 +62,7 @@ model Task {
 model UserReward {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String   @db.ObjectId
+  address   String?  
   user      User     @relation(fields: [userId], references: [id])
   rewardId  String   @db.ObjectId
   reward    Reward   @relation(fields: [rewardId], references: [id])

@@ -21,7 +21,7 @@ export const generateNonce = async (req: Request, res: Response) => {
     } else {
      id = await prisma.nonce.create({ data: { walletAddress, nonce}})
     }
-    res.status(200).json({ id: id?.id, nonce });
+    res.status(200).json({ id: id?.id, nonce: `Welcome to ImHuman\n\nClick to sign in.\n\nThis request does not trigger any transaction or cost any fees.\n\n\n\nWallet Address: ${walletAddress}\n\nNonce: ${nonce}` });
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
@@ -38,7 +38,7 @@ export const authenticateUser = async (req: Request, res: Response) => {
       if(!nonce) {
         return res.status(400).json({ error: 'Invalid id' });
       }
-      const message = nonce?.nonce;
+      const message = `Welcome to ImHuman\n\nClick to sign in.\n\nThis request does not trigger any transaction or cost any fees.\n\n\n\nWallet Address: ${nonce?.walletAddress}\n\nNonce: ${nonce?.nonce}`
       const referralCode = uuidV4(randomBytes(16)).slice(0, 6);
 
       //const message = `Welcome to ImHuman\n\nClick to sign in.\n\nThis request does not trigger any transaction or cost any fees.\n\n\n\nWallet Address: 0xE855027BB11E4820D302956143333c80A02142B1\n\nNonce: 23437498-3d0c-4690-a14c-cd9bac6474ef`
